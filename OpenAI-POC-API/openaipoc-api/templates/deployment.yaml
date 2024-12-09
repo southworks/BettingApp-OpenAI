@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "openaipoc-chart.fullname" . }}
+  labels:
+    {{- include "openaipoc-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "openaipoc-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "openaipoc-chart.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          env:
+            - name: AzureOpenAI__ResourceUri
+              value: {{ .Values.openai.uri | quote }}
+            - name: AzureOpenAI__ApiKey
+              value: {{ .Values.openai.key | quote }}
+            - name: AzureOpenAI__ModelDeployment
+              value: {{ .Values.openai.model | quote }}
+            - name: CosmosDb__KeyVaultUrl
+              value: {{ .Values.cosmosdb.keyvaulturl | quote }}
+            - name: CosmosDb__SecretName
+              value: {{ .Values.cosmosdb.secretname | quote }}
+            - name: CosmosDb__DatabaseName
+              value: {{ .Values.cosmosdb.dbname | quote }}
+            - name: CosmosDb__ResourceGroupName
+              value: {{ .Values.cosmosdb.rg | quote }}
+            - name: CosmosDb__AccountName
+              value: {{ .Values.cosmosdb.account | quote }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

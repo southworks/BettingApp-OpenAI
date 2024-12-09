@@ -1,0 +1,6 @@
+@OpenAIPoC.API_HostAddress = http://localhost:1234
+
+GET {{OpenAIPoC.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

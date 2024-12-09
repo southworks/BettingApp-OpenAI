@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "openaipoc-ui.fullname" . }}-test-connection"
+  labels:
+    {{- include "openaipoc-ui.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: {{ .Chart.Name }}
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+      args: ['{{ include "openaipoc-ui.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Always

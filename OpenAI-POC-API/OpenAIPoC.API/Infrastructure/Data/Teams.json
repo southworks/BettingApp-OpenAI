@@ -1,0 +1,471 @@
+[
+  {
+    "Name": "Real Madrid",
+    "Squad": [
+      {
+        "Name": "Thibaut Courtois",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Andriy Lunin",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Sergio Mestre",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Dani Carvajal",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Éder Militão",
+        "Position": "Defender"
+      },
+      {
+        "Name": "David Alaba",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Jesús Vallejo",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Fran García",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Antonio Rüdiger",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Ferland Mendy",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Jude Bellingham",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Eduardo Camavinga",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Federico Valverde",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Luka Modrić",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Aurélien Tchouameni",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Arda Güler",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Lucas Vázquez",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Vinícius Júnior",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Kylian Mbappé",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Rodrygo",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Endrick",
+        "Position": "Forward"
+      }
+    ]
+  },
+  {
+    "Name": "Atlético Madrid",
+    "Squad": [
+      {
+        "Name": "Marc-André ter Stegen",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Iñaki Peña",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Pau Cubarsí",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Alejandro Balde",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Ronald Araújo",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Iñigo Martínez",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Andreas Christensen",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Jules Koundé",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Eric García",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Gerard Martín",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Gavi",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Pedri",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Pablo Torre",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Marc Casado",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Frenkie de Jong",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Ferran Torres",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Robert Lewandowski",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Ansu Fati",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Raphinha",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Fermín López",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Pau Victor",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Lamine Yamal",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Dani Olmo",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Unai Hernandez",
+        "Position": "Forward"
+      }
+    ]
+  },
+  {
+    "Name": "Barcelona",
+    "Squad": [
+      {
+        "Name": "Marc-André ter Stegen",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Iñaki Peña",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Pau Cubarsí",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Alejandro Balde",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Ronald Araújo",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Iñigo Martínez",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Andreas Christensen",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Jules Koundé",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Eric García",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Gerard Martín",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Gavi",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Pedri",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Pablo Torre",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Marc Casado",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Frenkie de Jong",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Ferran Torres",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Robert Lewandowski",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Ansu Fati",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Raphinha",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Fermín López",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Pau Victor",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Lamine Yamal",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Dani Olmo",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Unai Hernandez",
+        "Position": "Forward"
+      }
+    ]
+  },
+  {
+    "Name": "Liverpool",
+    "Squad": [
+      {
+        "Name": "Alisson Becker",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Vitězslav Jaroš",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Caoimhin Kelleher",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Joe Gomez",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Wataru Endo",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Virgil van Dijk",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Ibrahima Konaté",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Kostas Tsimikas",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Andy Robertson",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Trent Alexander-Arnold",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Dominik Szoboszlai",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Alexis Mac Allister",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Federico Chiesa",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Curtis Jones",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Ryan Gravenberch",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Tyler Morton",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Luis Díaz",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Darwin Núñez",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Mohamed Salah",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Cody Gakpo",
+        "Position": "Forward"
+      },
+      {
+        "Name": "Diogo Jota",
+        "Position": "Forward"
+      }
+    ]
+  },
+  {
+    "Name": "Manchester City",
+    "Squad": [
+      {
+        "Name": "Stefan Ortega",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Ederson",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Scott Carson",
+        "Position": "Goalkeeper"
+      },
+      {
+        "Name": "Kyle Walker",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Rúben Dias",
+        "Position": "Defender"
+      },
+      {
+        "Name": "John Stones",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Nathan Aké",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Joško Gvardiol",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Manuel Akanji",
+        "Position": "Defender"
+      },
+      {
+        "Name": "Mateo Kovačić",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Jack Grealish",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Jérémy Doku",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Rodri",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Kevin De Bruyne",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "İlkay Gündoğan",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Bernardo Silva",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Savinho",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Matheus Nunes",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Phil Foden",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "James McAtee",
+        "Position": "Midfielder"
+      },
+      {
+        "Name": "Erling Haaland",
+        "Position": "Forward"
+      }
+    ]
+  }
+]

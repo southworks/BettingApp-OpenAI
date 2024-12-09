@@ -1,0 +1,79 @@
+trigger:
+  - develop
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: openaipoc-api
+  - name: containerRegistry
+    value:
+  - name: aksServiceConnection
+    value:
+  - name: armServiceConnection
+    value:
+  - name: tag
+    value: $(Build.BuildId)
+
+stages:
+  - stage: buildAndpublish
+    displayName: Build and Publish
+    condition: ne(variables['Build.Reason'], 'PullRequest')
+    jobs:
+      - job: buildAndPush
+        displayName: Publish Docker image
+        steps:
+          - task: Docker@2
+            displayName: Build and Push Docker image
+            inputs:
+              command: "buildAndPush"
+              containerRegistry: "${{ variables.containerRegistry }}"
+              repository: $(image-repository)
+          - task: PublishPipelineArtifact@1
+            inputs:
+              artifactName: 'manifests'
+              path: '$(helmchart-path)'
+
+  - stage: deploy
+    displayName: Deploy
+    dependsOn: buildAndpublish
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy job
+      environment: AppApproval
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: DownloadPipelineArtifact@2
+              inputs:
+                artifactName: 'manifests'
+                downloadPath: '$(System.ArtifactsDirectory)/manifests'
+
+            - task: HelmInstaller@1
+              displayName: Install helm
+
+            - task: HelmDeploy@0
+              displayName: Deploy to Kubernetes with Helm
+              inputs:
+                connectionType: 'Kubernetes Service Connection'
+                kubernetesServiceConnection: "${{ variables.aksServiceConnection }}"
+                command: 'upgrade'
+                install: true
+                kubernetesCluster: $(kubernetes-cluster)
+                namespace: $(api-namespace)
+                chartType: 'FilePath'
+                chartPath: '$(System.ArtifactsDirectory)/manifests'
+                releaseName: $(helm-release-name)
+                overrideValues: |
+                  image.repository="$(acr-name).azurecr.io/$(image-repository)"
+                  image.tag="${{ variables.tag }}"
+                  openai.uri=$(openai-uri)
+                  openai.key=$(openai-key)
+                  openai.model=$(openai-model)
+                  cosmosdb.keyvaulturl=$(keyvault-url)
+                  cosmosdb.secretname=$(secret-name)
+                  cosmosdb.dbname=$(cosmosdb-name)
+                  cosmosdb.rg=$(cosmosdb-rg)
+                  cosmosdb.account=$(cosmosdb-account)
+                waitForExecution: true

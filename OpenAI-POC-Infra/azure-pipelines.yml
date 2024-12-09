@@ -1,0 +1,282 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: openaipoc
+  - name: serviceConnection
+    value: 
+
+stages:
+  - stage: "validate"
+    displayName: "Scan Terraform files"
+    condition: and(eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job: "runCheckov"
+        displayName: "Checkov scan"
+        steps:
+          - bash: |
+              pip install checkov
+            workingDirectory: $(System.DefaultWorkingDirectory)
+            displayName: "Install checkov"
+          - bash: |
+              checkov -d . \
+                --output junitxml \
+                --soft-fail \
+                --skip-path azure-pipelines.yml > CheckovReport.xml
+            workingDirectory: $(System.DefaultWorkingDirectory)
+            displayName: "Run checkov"
+          - task: PublishTestResults@2
+            inputs:
+              testRunTitle: "Checkov Policies"
+              failTaskOnFailedTests: true
+              testResultsFormat: "JUnit"
+              testResultsFiles: "CheckovReport.xml"
+              searchFolder: "$(System.DefaultWorkingDirectory)"
+            displayName: "Publish checkov scan results"
+      - job: "validateTerraform"
+        displayName: "Terraform validate"
+        continueOnError: false
+        steps:
+          - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
+            inputs:
+              terraformVersion: "$(TERRAFORM_VERSION)"
+            displayName: "Install terraform"
+
+          - task: TerraformCLI@1
+            inputs:
+              command: init
+              backendType: azurerm
+              backendServiceArm: "${{ variables.serviceConnection }}"
+              ensureBackend: true
+              backendAzureRmResourceGroupName: $(TF_STATE_RG)
+              backendAzureRmResourceGroupLocation: $(TF_STATE_RG_LOCATION)
+              backendAzureRmStorageAccountName: $(TF_STATE_SA)
+              backendAzureRmStorageAccountSku: $(TF_STATE_SA_SKU)
+              backendAzureRmContainerName: $(TF_STATE_CONTAINER)
+              backendAzureRmKey: $(TF_STATE_KEY)
+              commandOptions: "-upgrade"
+            displayName: "Run terraform init"
+
+          - task: TerraformCLI@1
+            inputs:
+              command: "validate"
+              environmentServiceName: "${{ variables.serviceConnection }}"
+            displayName: "Run terraform validate"
+
+  - stage: "planTerraform"
+    displayName: "Terraform - Plan"
+    jobs:
+      - job: "TerraformJobs"
+        displayName: "Terraform install, init & plan"
+        steps:
+          - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
+            inputs:
+              terraformVersion: "$(TERRAFORM_VERSION)"
+            displayName: "Install terraform"
+
+          - task: TerraformCLI@1
+            inputs:
+              command: init
+              backendType: azurerm
+              backendServiceArm: "${{ variables.serviceConnection }}"
+              ensureBackend: true
+              backendAzureRmResourceGroupName: $(TF_STATE_RG)
+              backendAzureRmResourceGroupLocation: $(TF_STATE_RG_LOCATION)
+              backendAzureRmStorageAccountName: $(TF_STATE_SA)
+              backendAzureRmStorageAccountSku: $(TF_STATE_SA_SKU)
+              backendAzureRmContainerName: $(TF_STATE_CONTAINER)
+              backendAzureRmKey: $(TF_STATE_KEY)
+              commandOptions: "-upgrade"
+            displayName: "Run terraform init"
+
+          - task: TerraformCLI@1
+            inputs:
+              command: plan
+              commandOptions: "-out=$(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode"
+              publishPlanResults: "Openai-POC"
+              backendType: azurerm
+              backendServiceArm: "${{ variables.serviceConnection }}"
+              ensureBackend: true
+              backendAzureRmResourceGroupName: $(TF_STATE_RG)
+              backendAzureRmResourceGroupLocation: $(TF_STATE_RG_LOCATION)
+              backendAzureRmStorageAccountName: $(TF_STATE_SA)
+              backendAzureRmStorageAccountSku: $(TF_STATE_SA_SKU)
+              backendAzureRmContainerName: $(TF_STATE_CONTAINER)
+              backendAzureRmKey: $(TF_STATE_KEY)
+            displayName: "Run terraform plan"
+
+          - script: echo "##vso[task.setvariable variable=TERRAFORM_PLAN_HAS_CHANGES;isOutput=true]$(TERRAFORM_PLAN_HAS_CHANGES)"
+            name: "TerraformPlanChangesVar"
+            displayName: "Set Terraform Plan Changes Variable"
+
+          - task: CopyFiles@2
+            displayName: "Copy Terraform Plan"
+            inputs:
+              contents: "terraform.tfplan*"
+              targetFolder: "$(Build.ArtifactStagingDirectory)"
+
+          - publish: "$(Build.ArtifactStagingDirectory)"
+            displayName: "Publish Terraform Plan Artifact"
+            artifact: tfplan
+
+  - stage: "applyTerraform"
+    displayName: "Terraform - Apply"
+    dependsOn: "planTerraform"
+    jobs:
+      - deployment: "ApplyTerraformJob"
+        displayName: "Terraform apply"
+        environment: "TerraformApproval"
+        variables:
+          TERRAFORM_PLAN_HAS_CHANGES: $[stageDependencies.planTerraform.TerraformJobs.outputs['TerraformPlanChangesVar.TERRAFORM_PLAN_HAS_CHANGES']]
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - download: current
+                  artifact: tfplan
+                  displayName: "Download Terraform Plan Artifact"
+
+                - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
+                  inputs:
+                    terraformVersion: "$(TERRAFORM_VERSION)"
+                  displayName: "Install terraform"
+
+                - task: TerraformCLI@1
+                  inputs:
+                    command: init
+                    backendType: azurerm
+                    backendServiceArm: "${{ variables.serviceConnection }}"
+                    ensureBackend: true
+                    backendAzureRmResourceGroupName: $(TF_STATE_RG)
+                    backendAzureRmResourceGroupLocation: $(TF_STATE_RG_LOCATION)
+                    backendAzureRmStorageAccountName: $(TF_STATE_SA)
+                    backendAzureRmStorageAccountSku: $(TF_STATE_SA_SKU)
+                    backendAzureRmContainerName: $(TF_STATE_CONTAINER)
+                    backendAzureRmKey: $(TF_STATE_KEY)
+                    commandOptions: "-upgrade"
+                  displayName: "Run terraform init"
+
+                - task: TerraformCLI@1
+                  condition: and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))
+                  inputs:
+                    command: apply
+                    commandOptions: "$(Pipeline.Workspace)/tfplan/terraform.tfplan"
+                    backendServiceArm: "${{ variables.serviceConnection }}"
+                    backendAzureRmResourceGroupName: $(TF_STATE_RG)
+                    backendAzureRmResourceGroupLocation: $(TF_STATE_RG_LOCATION)
+                    backendAzureRmStorageAccountName: $(TF_STATE_SA)
+                    backendAzureRmStorageAccountSku: $(TF_STATE_SA_SKU)
+                    backendAzureRmContainerName: $(TF_STATE_CONTAINER)
+                    backendAzureRmKey: $(TF_STATE_KEY)
+                  displayName: "Run terraform apply"
+
+                - script: |
+                    cluster_name=$(terraform output -raw aks_cluster_name)
+                    resource_group=$(terraform output -raw resource_group_name)
+                    namespace_identities=$(terraform output -raw workload_identities_client_id)
+                    echo "##vso[task.setvariable variable=clusterName]$cluster_name"
+                    echo "##vso[task.setvariable variable=resourceGroup]$resource_group"
+                    echo "##vso[task.setvariable variable=namespaceIdentities]$namespace_identities"
+                  name: SetTfOutput
+                  displayName: 'Set output variables'
+
+                - task: Kubernetes@1
+                  displayName: Kubernetes login
+                  inputs:
+                    connectionType: 'Azure Resource Manager'
+                    azureSubscriptionEndpoint: "${{ variables.serviceConnection }}"
+                    azureResourceGroup: $(resourceGroup)
+                    kubernetesCluster: $(clusterName)
+                    command: login
+
+                - script: |
+                    TOTAL_NODES=$(kubectl get nodes --no-headers | wc -l)
+                    READY_NODES=$(kubectl get nodes --no-headers | grep -c ' Ready')
+
+                    if [ $? -ne 0 ]; then
+                      echo "Cluster unreachable."
+                      exit 1
+                    fi
+
+                    if [ "$READY_NODES" -eq "$TOTAL_NODES" ]; then
+                      echo "All nodes are ready."
+                    else
+                      echo "Some nodes are not ready."
+                      exit 1
+                    fi
+                  name: CheckNodeStatus
+                  displayName: Check cluster nodes status
+                  retryCountOnTaskFailure: 10
+                
+                - script: |
+                    NOT_RUNNING_PODS=$(kubectl get pods -n kube-system --no-headers | grep -v 'Running\|Completed' | wc -l)
+                    
+                    if [ "$NOT_RUNNING_PODS" -eq 0 ]; then
+                      echo "All kube-system pods are running."
+                    else
+                      echo "Some kube-system pods are not running."
+                      exit 1
+                    fi
+                  name: CheckSystemPods
+                  displayName: Check system pods status
+                  retryCountOnTaskFailure: 10
+
+                - script: |
+                    IFS=',' read -r -a namespaces <<< "$(namespaceIdentities)"
+                    
+                    for item in "${namespaces[@]}"; do
+                      IFS='=' read -r namespace id <<< "$item"
+                     
+                      if kubectl get namespace $namespace > /dev/null 2>&1; then
+                        echo "Namespace '$namespace' exists."
+                      else
+                        echo "Namespace '$namespace' does not exist, creating..."
+                        kubectl create namespace $namespace
+                      fi
+
+                      if kubectl get serviceaccount "${namespace}-sa" --namespace $namespace > /dev/null 2>&1; then
+                        echo "ServiceAccount '${namespace}-sa' already exists in namespace '$namespace'."
+                      else
+                        echo "Creating ServiceAccount '${namespace}-sa' in namespace '$namespace'."
+                        kubectl create serviceaccount "${namespace}-sa" --namespace $namespace
+                      fi
+
+                      kubectl annotate serviceaccount "${namespace}-sa" --namespace $namespace "azure.workload.identity/client-id=$id"  --overwrite
+
+                      done                      
+                  name: CreateNamespaces
+                  displayName: Create namespaces and service accounts if they do not exist
+
+                - task: HelmInstaller@1
+                  displayName: Install helm
+
+                - script: |
+                    helm repo add jetstack https://charts.jetstack.io
+                    helm repo update
+                  displayName: Add Cert-Manager Helm Repo
+
+                - script: |
+                    helm upgrade cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set crds.enabled=true --install
+                  displayName: Install Cert-Manager
+                    
+                - script: |
+                    git clone https://github.com/ebrianne/cert-manager-webhook-duckdns.git
+                  displayName: Clone DuckDNS webhook
+
+                - script: |
+                    helm upgrade cert-manager-webhook-duckdns ./cert-manager-webhook-duckdns/deploy/cert-manager-webhook-duckdns \
+                    --namespace cert-manager \
+                    --set duckdns.token="$TOKEN" \
+                    --set clusterIssuer.production.create=true \
+                    --set clusterIssuer.staging.create=false \
+                    --set clusterIssuer.email= \
+                    --set logLevel=2 \
+                    --install
+                  env:
+                    TOKEN: $(DNS_TOKEN)                      
+                  displayName: Create ClusterIssuer

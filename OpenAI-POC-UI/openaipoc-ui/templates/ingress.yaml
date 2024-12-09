@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "openaipoc-ui.fullname" . }}
+  annotations:
+    cert-manager.io/cluster-issuer: 
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host }}
+    secretName: 
+  rules:
+  - host: {{ .Values.ingress.host }} 
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "openaipoc-ui.fullname" . }}
+            port:
+              number: {{ .Values.service.port }}
