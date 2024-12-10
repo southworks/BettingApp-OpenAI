@@ -7,9 +7,9 @@ pool:
 variables:
   - group: openaipoc-ui
   - name: containerRegistry
-    value: 
+    value: <container_registry_name>
   - name: aksServiceConnection
-    value: 
+    value: <aks_service_connection_name>
   - name: tag
     value: $(Build.BuildId)
 

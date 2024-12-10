@@ -10,7 +10,7 @@ module "network" {
 }
 
 resource "azurerm_container_registry" "acr" {
-  name                = ""
+  name                = "<container_registry_name>"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   # checkov:skip=CKV_AZURE_139:Public access for simplicity
@@ -60,7 +60,7 @@ resource "azurerm_key_vault" "kv" {
   # checkov:skip=CKV_AZURE_109:Not Required for POC
   # checkov:skip=CKV_AZURE_114:Not Required for POC
   # checkov:skip=CKV_AZURE_189:Not Required for POC  
-  name                        = ""
+  name                        = "<key_valut_name>"
   location                    = azurerm_resource_group.rg.location
   resource_group_name         = azurerm_resource_group.rg.name
   tenant_id                   = data.azurerm_client_config.current.tenant_id
@@ -76,7 +76,7 @@ data "azurerm_cosmosdb_account" "cosmosdb" {
 
 resource "azurerm_key_vault_secret" "mongo_connection_string" {
   # checkov:skip=CKV_AZURE_41:Not Required for POC
-  name         = ""
+  name         = "<key_valut_secret_name>"
   value        = data.azurerm_cosmosdb_account.cosmosdb.primary_mongodb_connection_string
   key_vault_id = azurerm_key_vault.kv.id
   content_type = "text/plain"

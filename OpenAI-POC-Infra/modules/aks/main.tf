@@ -1,7 +1,7 @@
 resource "azurerm_user_assigned_identity" "aks_identity" {
   resource_group_name = var.resource_group_name
   location            = var.location
-  name                = ""
+  name                = "<assigned_identity_name>"
 }
 
 resource "azurerm_role_assignment" "kubelet_identity_operator" {
@@ -26,7 +26,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
   # checkov:skip=CKV2_AZURE_29:Using kubenet for simplicity
   # checkov:skip=CKV_AZURE_226:We want a minimal-cost POC
   # checkov:skip=CKV_AZURE_232:Skipping for simplicity
-  name                      = ""
+  name                      = "<kubernetes_cluster_name>"
   location                  = var.location
   dns_prefix                = "openaiakscluster"
   resource_group_name       = var.resource_group_name

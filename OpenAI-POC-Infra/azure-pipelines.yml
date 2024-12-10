@@ -7,7 +7,7 @@ pool:
 variables:
   - group: openaipoc
   - name: serviceConnection
-    value: 
+    value: <service_connection_name>
 
 stages:
   - stage: "validate"
@@ -274,7 +274,7 @@ stages:
                     --set duckdns.token="$TOKEN" \
                     --set clusterIssuer.production.create=true \
                     --set clusterIssuer.staging.create=false \
-                    --set clusterIssuer.email= \
+                    --set clusterIssuer.email= <email> \
                     --set logLevel=2 \
                     --install
                   env:
