@@ -7,7 +7,7 @@ pool:
 variables:
   - group: openaipoc-ui
   - name: containerRegistry
-    value: <container_registry_name>
+    value: <azure_container_registry_name>
   - name: aksServiceConnection
     value: <aks_service_connection_name>
   - name: tag
