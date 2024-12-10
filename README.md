@@ -1,6 +1,10 @@
 # Betting App
 
-The Betting with Open AI POC leverages cutting-edge capabilities of OpenAI’s GPT-3.5 Turbo to redefine traditional sports betting. This project replaces conventional mathematical modules with AI-driven insights, providing a robust and efficient foundation for sports betting pricing solutions. By integrating AI, the system achieves rapid odds calculations, enhanced resource efficiency, and delivers actionable insights for bookmakers. 
+Betting with Open AI POC leverages cutting-edge capabilities of OpenAI’s GPT-3.5 Turbo to redefine traditional sports betting. This project can replace or complement conventional mathematical modules with AI-driven insights, providing a robust and efficient foundation for sports betting pricing solutions.  
+
+By integrating AI, the system achieves rapid pricing calculations, enhanced resource efficiency, and delivers actionable insights for bookmakers, revolutionizing how betting markets operate. 
+
+Getting early and key market data can now be independent from other data providers and would allow bookmakers to derive other markets since this is now driven by AI. We have compared several football fixtures with high-street bookmaker prices and the accuracy of the odds generated are pretty close to them, which opens an opportunity to improve speed in market generation and availability, reduce dependencies to third parties, reduce the pricing model infrastructure where applies and therefore reduce costs and maintainability. 
 
 This project is structured around three main components.
 
